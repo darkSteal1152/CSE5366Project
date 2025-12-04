@@ -1,0 +1,28 @@
+// given module for shift register
+// used in KeypadInput
+// shifts the numbers to the left when new input is entered from keypad
+
+module ShiftReg #(
+    parameter COUNT = 4,
+    parameter WIDTH = 4
+) (
+    input trig, reset, dir, // Left = 0, Right = 1
+    input [WIDTH-1:0] in,
+    output reg [(COUNT*WIDTH)-1:0] out
+);
+
+    always @ (posedge trig, negedge reset) begin
+        if (~reset) begin
+            out <= 0;
+        end else begin
+            if (dir) begin // 1 = Right
+                out <= out >> WIDTH;
+                out[(COUNT*WIDTH)-1:((COUNT*WIDTH)-1)-WIDTH] <= in;
+            end else begin // 0 = Left
+                out <= out << WIDTH;
+                out[WIDTH-1:0] <= in;
+            end
+        end
+    end
+
+endmodule
